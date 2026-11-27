@@ -87,6 +87,8 @@ public class StatisticController
             return;
         }
 
+        BateF.BateFHub.AddStat(_trackingController.EntityController?.LocalUserData?.Username, valueType.ToString(), gainedValue);
+
         var updateScope = ResolveDashboardUpdateScope(valueType);
         var nowUtc = DateTime.UtcNow;
         var mapType = ClusterController.CurrentCluster.MapType;

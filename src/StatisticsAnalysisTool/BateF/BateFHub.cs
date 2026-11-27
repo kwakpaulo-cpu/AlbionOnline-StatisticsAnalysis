@@ -20,6 +20,8 @@ public static class BateFHub
 
     private static readonly ConcurrentQueue<object[]> LootQueue = new();
     private static readonly ConcurrentQueue<object[]> KillQueue = new();
+    private static readonly ConcurrentDictionary<string, double> Stats = new();
+    private static string _playerName = string.Empty;
     private static readonly HttpClient Client = new() { Timeout = TimeSpan.FromSeconds(20) };
     private static int _started;
 
@@ -89,6 +91,22 @@ public static class BateFHub
         Start();
     }
 
+    public static void AddStat(string playerName, string valueType, double value)
+    {
+        if (string.IsNullOrEmpty(valueType) || !double.IsFinite(value) || value == 0)
+        {
+            return;
+        }
+
+        if (!string.IsNullOrEmpty(playerName))
+        {
+            _playerName = playerName;
+        }
+
+        Stats.AddOrUpdate(valueType, value, (_, old) => old + value);
+        Start();
+    }
+
     private static void Start()
     {
         if (Interlocked.Exchange(ref _started, 1) == 1)
@@ -117,7 +135,7 @@ public static class BateFHub
 
     private static async Task FlushAsync()
     {
-        if (LootQueue.IsEmpty && KillQueue.IsEmpty)
+        if (LootQueue.IsEmpty && KillQueue.IsEmpty && Stats.IsEmpty)
         {
             return;
         }
@@ -141,7 +159,16 @@ public static class BateFHub
             kills.Add(row);
         }
 
-        var body = JsonSerializer.Serialize(new { loot, kills });
+        var stats = new Dictionary<string, double>();
+        foreach (var key in Stats.Keys)
+        {
+            if (Stats.TryRemove(key, out var value))
+            {
+                stats[key] = value;
+            }
+        }
+
+        var body = JsonSerializer.Serialize(new { loot, kills, stats, player = _playerName });
         try
         {
             using var request = new HttpRequestMessage(HttpMethod.Post, HubUrl + "/api/live");
@@ -173,6 +200,11 @@ public static class BateFHub
         foreach (var row in kills)
         {
             KillQueue.Enqueue(row);
+        }
+
+        foreach (var pair in stats)
+        {
+            Stats.AddOrUpdate(pair.Key, pair.Value, (_, old) => old + pair.Value);
         }
     }
 }
