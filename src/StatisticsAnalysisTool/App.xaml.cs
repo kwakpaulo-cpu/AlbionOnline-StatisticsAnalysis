@@ -1,4 +1,4 @@
-using Notification.Wpf;
+﻿using Notification.Wpf;
 using Serilog;
 using Serilog.Events;
 using StatisticsAnalysisTool.Backup;
@@ -138,6 +138,7 @@ public partial class App
                 await _trackingController.InitTrackingAsync();
                 ReportStartupProgress(100, LocalizationController.Translation("TRACKING"));
                 Current.MainWindow.Show();
+                BateF.BateFLogin.ShowIfNeeded();
             }
             finally
             {

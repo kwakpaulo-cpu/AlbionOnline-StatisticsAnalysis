@@ -27,12 +27,21 @@ public static class BateFHub
 
     public static string Status { get; private set; } = string.Empty;
 
+    public static string SavedTokenPath => Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "BateF", TokenFileName);
+
+    public static void SaveToken(string token)
+    {
+        Directory.CreateDirectory(Path.GetDirectoryName(SavedTokenPath));
+        File.WriteAllText(SavedTokenPath, token.Trim());
+    }
+
     public static string ReadToken()
     {
         try
         {
             var paths = new[]
             {
+                SavedTokenPath,
                 Path.Combine(AppContext.BaseDirectory, TokenFileName),
                 Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), TokenFileName),
                 Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "Downloads", TokenFileName)

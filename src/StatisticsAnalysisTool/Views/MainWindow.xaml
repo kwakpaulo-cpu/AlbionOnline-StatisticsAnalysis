@@ -1,4 +1,4 @@
-<Window x:Class="StatisticsAnalysisTool.Views.MainWindow"
+﻿<Window x:Class="StatisticsAnalysisTool.Views.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -10,7 +10,7 @@
         xmlns:glob="clr-namespace:System.Globalization;assembly=System.Runtime"
         mc:Ignorable="d"
         d:DesignHeight="850" d:DesignWidth="1150"
-        Title="AlbionOnline - StatisticsAnalysisTool"
+        Title="Bate F - CHEGOU? CORRE!"
         Closing="MainWindow_OnClosing"
         d:DataContext="{d:DesignInstance Type=viewModels:MainWindowViewModel}"
         Style="{StaticResource MainWindowStyle}">

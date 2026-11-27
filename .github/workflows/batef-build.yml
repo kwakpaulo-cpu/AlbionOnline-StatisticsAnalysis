@@ -41,14 +41,17 @@ jobs:
       - name: Zip
         shell: pwsh
         run: |
-          Set-Content -Path src\StatisticsAnalysisTool\bin\Release\publish\LEIA-ME-BATE-F.txt -Value @"
-          Statistics Analysis - versao Bate F
-          1. Entre no Bate F Hub > Loot da content > Coletor e baixe o arquivo BateF-token.txt.
-          2. Coloque o BateF-token.txt nesta pasta (junto do StatisticsAnalysisTool.exe).
-          3. Abra o StatisticsAnalysisTool.exe como administrador e ligue o Loot Logger.
-          O loot e as kills aparecem sozinhos no Hub.
+          $pub = "src\StatisticsAnalysisTool\bin\Release\publish"
+          Rename-Item -Path "$pub\StatisticsAnalysisTool.exe" -NewName "BateF.exe"
+          Set-Content -Path "$pub\LEIA-ME-BATE-F.txt" -Value @"
+          App Bate F - CHEGOU? CORRE!
+          1. Extraia esta pasta onde quiser.
+          2. Abra o BateF.exe (ele pede permissao de administrador, clique em Sim).
+          3. Na primeira vez, clique em Entrar com Discord e faca o login no navegador.
+          Pronto: a fama, a prata e o loot aparecem sozinhos no seu Tracker do Bate F Hub.
           "@
-          Compress-Archive -Path src\StatisticsAnalysisTool\bin\Release\publish\* -DestinationPath StatisticsAnalysis-BateF-windows-x64.zip
+          Compress-Archive -Path "$pub\*" -DestinationPath BateF-windows-x64.zip
+          Copy-Item BateF-windows-x64.zip StatisticsAnalysis-BateF-windows-x64.zip
 
       - name: Release
         shell: pwsh
@@ -57,4 +60,4 @@ jobs:
         run: |
           gh release view batef-latest *> $null
           if ($LASTEXITCODE -eq 0) { gh release delete batef-latest --cleanup-tag -y }
-          gh release create batef-latest StatisticsAnalysis-BateF-windows-x64.zip --target $env:GITHUB_SHA --title "Statistics Analysis - Bate F" --notes "Versao da Bate F que envia o loot e as kills ao vivo para o Bate F Hub."
+          gh release create batef-latest BateF-windows-x64.zip StatisticsAnalysis-BateF-windows-x64.zip --target $env:GITHUB_SHA --title "App Bate F" --notes "Versao da Bate F que envia o loot e as kills ao vivo para o Bate F Hub."
