@@ -52,8 +52,11 @@ jobs:
           App Bate F - CHEGOU? CORRE!
           1. Extraia esta pasta onde quiser.
           2. Abra o BateF.exe (ele pede permissao de administrador, clique em Sim).
-          3. Na primeira vez, clique em Entrar com Discord e faca o login no navegador.
-          Pronto: a fama, a prata e o loot aparecem sozinhos no seu Tracker do Bate F Hub.
+          3. Na primeira vez, entre com o Discord na propria janela do app.
+          Pronto: o Tracker e os Mapas do Bate F Hub ficam dentro do app, e a fama,
+          a prata e o loot aparecem sozinhos no seu Tracker.
+          Dica: se o Windows avisar ao abrir, antes de extrair clique com o botao direito
+          no zip > Propriedades > marque Desbloquear > OK.
           "@
           Compress-Archive -Path "$pub\*" -DestinationPath BateF-windows-x64.zip
           Copy-Item BateF-windows-x64.zip StatisticsAnalysis-BateF-windows-x64.zip

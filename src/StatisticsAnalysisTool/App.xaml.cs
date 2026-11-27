@@ -138,7 +138,8 @@ public partial class App
                 await _trackingController.InitTrackingAsync();
                 ReportStartupProgress(100, LocalizationController.Translation("TRACKING"));
                 Current.MainWindow.Show();
-                BateF.BateFLogin.ShowIfNeeded();
+                Current.MainWindow.WindowState = WindowState.Minimized;
+                BateF.BateFHubWindow.Open();
             }
             finally
             {
