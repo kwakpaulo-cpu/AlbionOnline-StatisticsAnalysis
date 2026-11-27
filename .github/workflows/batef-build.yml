@@ -46,7 +46,7 @@ jobs:
         run: |
           $pub = "src\StatisticsAnalysisTool\bin\Release\publish"
           Rename-Item -Path "$pub\StatisticsAnalysisTool.exe" -NewName "BateF.exe"
-          Get-ChildItem $pub -Filter *.pdb -Recurse | Remove-Item
+          Get-ChildItem $pub -Include *.pdb,*.xml -Recurse | Remove-Item
           Get-ChildItem $pub | Format-Table Name, Length
           Set-Content -Path "$pub\LEIA-ME-BATE-F.txt" -Value @"
           App Bate F - CHEGOU? CORRE!
