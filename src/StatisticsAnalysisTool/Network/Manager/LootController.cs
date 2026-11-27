@@ -200,6 +200,9 @@ public class LootController : ILootController
             ClusterName = clusterName
         });
 
+        BateF.BateFHub.EnqueueLoot(loot.UtcPickupTime, loot.LootedByName, lootedByUser?.Value?.Guild, item.UniqueName,
+            item.LocalizedName, loot.Quantity, item.AverageEstMarketValue, loot.LootedFromName, lootedFromUser?.Value?.Guild);
+
         _mainWindowViewModel.LoggingBindings.LootLoggerStats.RecordLoot(loot, item);
 
         OnAddLoot?.Invoke(loot.LootedByName, loot.Quantity);
@@ -301,6 +304,7 @@ public class LootController : ILootController
             };
             utcTimestamp = lootLoggerObject.UtcPickupTime;
             _lootLoggerObjects.Add(lootLoggerObject);
+            BateF.BateFHub.EnqueueKill(utcTimestamp, died, diedPlayerGuild, killedBy, killedByGuild);
 
             _mainWindowViewModel.LoggingBindings.LootLoggerStats.RecordKillDeath(died, killedBy);
             await RemoveLootIfMoreThanLimitAsync(MaxLoot);

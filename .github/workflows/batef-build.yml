@@ -1,0 +1,59 @@
+name: "Bate F - build"
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - "src/**"
+      - ".github/workflows/batef-build.yml"
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: windows-latest
+    env:
+      Project_File_Path: src\StatisticsAnalysisTool\StatisticsAnalysisTool.csproj
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-dotnet@v5
+        with:
+          dotnet-version: 10.0.x
+          global-json-file: src/global.json
+
+      - name: Publish
+        shell: pwsh
+        run: |
+          dotnet publish $env:Project_File_Path `
+            -c Release `
+            -p:Platform=x64 `
+            -p:PublishDir=bin\Release\publish\ `
+            -p:TargetFramework=net10.0-windows10.0.19041.0 `
+            -p:RuntimeIdentifier=win-x64 `
+            -p:SelfContained=true `
+            -p:PublishSingleFile=false `
+            -p:PublishReadyToRun=false
+
+      - name: Zip
+        shell: pwsh
+        run: |
+          Set-Content -Path src\StatisticsAnalysisTool\bin\Release\publish\LEIA-ME-BATE-F.txt -Value @"
+          Statistics Analysis - versao Bate F
+          1. Entre no Bate F Hub > Loot da content > Coletor e baixe o arquivo BateF-token.txt.
+          2. Coloque o BateF-token.txt nesta pasta (junto do StatisticsAnalysisTool.exe).
+          3. Abra o StatisticsAnalysisTool.exe como administrador e ligue o Loot Logger.
+          O loot e as kills aparecem sozinhos no Hub.
+          "@
+          Compress-Archive -Path src\StatisticsAnalysisTool\bin\Release\publish\* -DestinationPath StatisticsAnalysis-BateF-windows-x64.zip
+
+      - name: Release
+        shell: pwsh
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh release view batef-latest *> $null
+          if ($LASTEXITCODE -eq 0) { gh release delete batef-latest --cleanup-tag -y }
+          gh release create batef-latest StatisticsAnalysis-BateF-windows-x64.zip --target $env:GITHUB_SHA --title "Statistics Analysis - Bate F" --notes "Versao da Bate F que envia o loot e as kills ao vivo para o Bate F Hub."

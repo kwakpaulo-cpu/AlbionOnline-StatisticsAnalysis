@@ -171,6 +171,12 @@ public static class AutoUpdateController
 
     private static async Task CheckForUpdatesInternalAsync(UpdateCheckSource checkSource)
     {
+        if (BateF.BateFHub.DisableUpstreamUpdates)
+        {
+            // Versao Bate F: nao atualiza para a versao original, senao perde o envio para o Hub.
+            return;
+        }
+
         if (!TryBeginUpdateCheck())
         {
             return;
